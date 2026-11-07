@@ -274,6 +274,17 @@ service:
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 8080
+  # Annotations for the Service, e.g. for Traefik to reach Kite over HTTPS when tls.enabled is true:
+  # traefik.ingress.kubernetes.io/service.serversscheme: https
+  annotations: {}
+
+# Serve HTTPS directly from Kite (e.g. for re-encryption behind a reverse proxy).
+# Liveness/readiness probes are switched to HTTPS automatically.
+tls:
+  enabled: false
+  # Name of a kubernetes.io/tls Secret containing tls.crt and tls.key (e.g. created by cert-manager).
+  # Certificate changes take effect after a pod restart.
+  secretName: ""
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:

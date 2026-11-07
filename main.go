@@ -49,12 +49,19 @@ func main() {
 		ReadHeaderTimeout: 10 * time.Second,
 		IdleTimeout:       120 * time.Second,
 	}
+	useTLS := common.TLSCertFile != ""
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		var err error
+		if useTLS {
+			err = srv.ListenAndServeTLS(common.TLSCertFile, common.TLSKeyFile)
+		} else {
+			err = srv.ListenAndServe()
+		}
+		if err != nil && err != http.ErrServerClosed {
 			klog.Fatalf("Failed to start server: %v", err)
 		}
 	}()
-	klog.Infof("Kite server started on port %s", common.Port)
+	klog.Infof("Kite server started on port %s (TLS: %t)", common.Port, useTLS)
 	klog.Infof("Version: %s, Build Date: %s, Commit: %s",
 		version.Version, version.BuildDate, version.CommitID)
 

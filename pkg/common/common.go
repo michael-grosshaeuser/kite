@@ -29,6 +29,8 @@ const (
 
 var (
 	Port            = "8080"
+	TLSCertFile     = ""
+	TLSKeyFile      = ""
 	JwtSecret       = DefaultJWTSecret
 	EnableAnalytics = false
 	Host            = ""
@@ -110,6 +112,12 @@ func LoadEnvs() {
 
 	if port := os.Getenv("PORT"); port != "" {
 		Port = port
+	}
+
+	TLSCertFile = os.Getenv("TLS_CERT_FILE")
+	TLSKeyFile = os.Getenv("TLS_KEY_FILE")
+	if (TLSCertFile == "") != (TLSKeyFile == "") {
+		klog.Fatalf("TLS_CERT_FILE and TLS_KEY_FILE must be set together")
 	}
 
 	if analytics := os.Getenv("ENABLE_ANALYTICS"); analytics == "true" {

@@ -141,10 +141,18 @@ rbac:
 
 ## 服务配置
 
-| 参数           | 描述     | 默认值      |
-| -------------- | -------- | ----------- |
-| `service.type` | 服务类型 | `ClusterIP` |
-| `service.port` | 服务端口 | `8080`      |
+| 参数                  | 描述                                                                        | 默认值      |
+| --------------------- | --------------------------------------------------------------------------- | ----------- |
+| `service.type`        | 服务类型                                                                    | `ClusterIP` |
+| `service.port`        | 服务端口                                                                    | `8080`      |
+| `service.annotations` | 服务注解，例如 `traefik.ingress.kubernetes.io/service.serversscheme: https` | `{}`        |
+
+## TLS 配置
+
+| 参数             | 描述                                                                     | 默认值  |
+| ---------------- | ------------------------------------------------------------------------ | ------- |
+| `tls.enabled`    | 由 Kite 直接提供 HTTPS；探针会自动切换为 HTTPS                           | `false` |
+| `tls.secretName` | `kubernetes.io/tls` 类型 Secret 名称（`tls.crt`、`tls.key`）；启用时必填 | `""`    |
 
 ## Ingress 配置
 

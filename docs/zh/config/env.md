@@ -27,3 +27,5 @@ Kite 默认支持一些环境变量，来改变一些配置项的默认值。
 - **ENABLE_ANALYTICS**：启用数据分析功能，默认值为 `false`。当启用后，Kite 将收集有限数据以帮助改进产品。
 
 - **PORT**：Kite 运行的端口，默认值为 `8080`。
+
+- **TLS_CERT_FILE** / **TLS_KEY_FILE**：PEM 格式证书和私钥的路径。两者都设置时，Kite 在 `PORT` 上提供 HTTPS 而不是 HTTP，例如用于反向代理到 Kite 的重新加密。两者必须同时设置；证书变更需重启后生效。Helm Chart 可通过 `tls.enabled` 和 `tls.secretName` 设置。

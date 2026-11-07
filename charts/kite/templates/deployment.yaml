@@ -1,5 +1,18 @@
 {{- $plugins := .Values.plugins | default dict }}
 {{- $persistence := $plugins.persistence | default dict }}
+{{- $tls := .Values.tls | default dict }}
+{{- if and $tls.enabled (not $tls.secretName) }}
+{{- fail "tls.secretName is required when tls.enabled is true" }}
+{{- end }}
+{{- $livenessProbe := deepCopy (.Values.livenessProbe | default dict) }}
+{{- $readinessProbe := deepCopy (.Values.readinessProbe | default dict) }}
+{{- if $tls.enabled }}
+{{- range (list $livenessProbe $readinessProbe) }}
+{{- if .httpGet }}
+{{- $_ := set .httpGet "scheme" "HTTPS" }}
+{{- end }}
+{{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -81,14 +94,20 @@ spec:
             - name: KITE_CONFIG_FILE
               value: /etc/kite/config.yaml
             {{- end }}
+            {{- if $tls.enabled }}
+            - name: TLS_CERT_FILE
+              value: /etc/kite-tls/tls.crt
+            - name: TLS_KEY_FILE
+              value: /etc/kite-tls/tls.key
+            {{- end }}
           {{- with .Values.extraEnvs }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.livenessProbe }}
+          {{- with $livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.readinessProbe }}
+          {{- with $readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -103,6 +122,11 @@ spec:
           {{- if .Values.config.enabled }}
             - name: kite-config
               mountPath: /etc/kite
+              readOnly: true
+          {{- end }}
+          {{- if $tls.enabled }}
+            - name: kite-tls
+              mountPath: /etc/kite-tls
               readOnly: true
           {{- end }}
           {{- if and (eq .Values.db.type "sqlite")}}
@@ -121,6 +145,11 @@ spec:
             items:
               - key: config.yaml
                 path: config.yaml
+      {{- end }}
+      {{- if $tls.enabled }}
+        - name: kite-tls
+          secret:
+            secretName: {{ $tls.secretName }}
       {{- end }}
       {{- if eq .Values.db.type "sqlite"}}
         - name: {{ include "kite.fullname" . }}-storage

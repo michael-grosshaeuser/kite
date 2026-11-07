@@ -27,3 +27,5 @@ Kite supports several environment variables by default to change the default val
 - **ENABLE_ANALYTICS**: Enable data analytics functionality, default value is `false`. When enabled, Kite will collect limited data to help improve the product.
 
 - **PORT**: Port on which Kite runs, default value is `8080`.
+
+- **TLS_CERT_FILE** / **TLS_KEY_FILE**: Paths to a PEM certificate and private key. When both are set, Kite serves HTTPS instead of HTTP on `PORT`, e.g. to re-encrypt traffic from a reverse proxy. Both must be set together; certificate changes take effect after a restart. The Helm Chart sets them via `tls.enabled` and `tls.secretName`.

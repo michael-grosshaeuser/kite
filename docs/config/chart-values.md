@@ -160,10 +160,18 @@ rbac:
 
 ## Service Configuration
 
-| Parameter      | Description  | Default     |
-| -------------- | ------------ | ----------- |
-| `service.type` | Service type | `ClusterIP` |
-| `service.port` | Service port | `8080`      |
+| Parameter             | Description                                                                            | Default     |
+| --------------------- | -------------------------------------------------------------------------------------- | ----------- |
+| `service.type`        | Service type                                                                           | `ClusterIP` |
+| `service.port`        | Service port                                                                           | `8080`      |
+| `service.annotations` | Service annotations, e.g. `traefik.ingress.kubernetes.io/service.serversscheme: https` | `{}`        |
+
+## TLS Configuration
+
+| Parameter        | Description                                                                              | Default |
+| ---------------- | ---------------------------------------------------------------------------------------- | ------- |
+| `tls.enabled`    | Serve HTTPS directly from Kite; probes switch to HTTPS automatically                     | `false` |
+| `tls.secretName` | Name of a `kubernetes.io/tls` Secret (`tls.crt`, `tls.key`); required when `tls.enabled` | `""`    |
 
 ## Ingress Configuration
 
